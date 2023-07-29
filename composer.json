@@ -10,13 +10,16 @@
     "require": {
         "php": "^7.3|^8.0",
         "fideloper/proxy": "^4.4",
+        "firevel/firebase-authentication": "^1.1",
         "fruitcake/laravel-cors": "^2.0",
         "google/cloud-firestore": "^1.19",
         "guzzlehttp/guzzle": "^7.0.1",
+        "kreait/firebase-php": "^5.26",
         "kreait/laravel-firebase": "^3.0",
         "laravel/framework": "^8.12",
         "laravel/tinker": "^2.5",
-        "laravelcollective/html": "^6.2"
+        "laravelcollective/html": "^6.2",
+        "realrashid/sweet-alert": "^7.0"
     },
     "require-dev": {
         "facade/ignition": "^2.5",

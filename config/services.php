@@ -30,4 +30,24 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'firebase' => [
+        'apiKey' => env('FIREBASE_API_KEY'),
+        'authDomain' => env('FIREBASE_AUTH_DOMAIN'),
+        'projectId' => env('FIREBASE_AUTH_DOMAIN'),
+        'storageBucket' => env('FIREBASE_STORAGE_BUCKET'),
+        'messagingSenderId' => env('FIREBASE_MESSAGIN_SENDER_ID'),
+        'appId' => env('FIREBASE_APP_ID'),
+        'measurementId' => env('FIREBASE_MEASUREMENT_ID'),
+        // 'storage_bucket' => 'gs://bimbel-blc.appspot.com',
+    ],
+
+    // 'firebase' => [
+    //     'apiKey' => 'AIzaSyBIpXCoxMW3BD8mrRG0fORXVrwhqvrjiaM',
+    //     'authDomain' => 'bimbel-blc.firebaseapp.com',
+    //     'projectId' => 'bimbel-blc',
+    //     'storageBucket' => 'bimbel-blc.appspot.com',
+    //     'messagingSenderId' => '852604894387',
+    //     'appId' => '1:852604894387:web:0240bd43e27cf9154884c6',
+    //     'measurementId' => 'G-GRM8815LCT',
+    // ],
 ];
