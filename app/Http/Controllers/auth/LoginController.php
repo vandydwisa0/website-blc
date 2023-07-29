@@ -1,65 +1,113 @@
 <?php
 
-namespace App\Http\Controllers\auth;
+namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use Kreait\Firebase\Auth;
+use App\Providers\RouteServiceProvider;
+use Firebase\Auth\Token\Exception\InvalidToken;
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
-use Kreait\Firebase\Exception\Auth\UserNotFound;
+use Illuminate\Support\Facades\Session;
+use Kreait\Firebase\Auth as FirebaseAuth;
+use Kreait\Firebase\Auth\SignInResult\SignInResult;
+use Kreait\Firebase\Exception\FirebaseException;
+use Illuminate\Validation\ValidationException;
+use Carbon\Carbon;
+use Auth;
+
+use App\Models\User;
 use RealRashid\SweetAlert\Facades\Alert;
-use Session;
 
 class LoginController extends Controller
 {
-    public function index()
+    /*
+    |--------------------------------------------------------------------------
+    | Login Controller
+    |--------------------------------------------------------------------------
+    |
+    | This controller handles authenticating users for the application and
+    | redirecting them to your home screen. The controller uses a trait
+    | to conveniently provide its functionality to your applications.
+    |
+    */
+
+    use AuthenticatesUsers;
+
+    /**
+     * Where to redirect users after login.
+     *
+     * @var string
+     */
+    protected $redirectTo = '/admin/dashboard';
+    protected $auth;
+
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct(FirebaseAuth $auth)
     {
-        $staff = app('firebase.firestore')->database()->collection('users')->documents();
-        return view('auth.login', compact('staff'));
+        $this->middleware('guest')->except('logout');
+        $this->auth = $auth;
     }
 
-    public function login(Request $request)
+    public function showLoginForm()
     {
-        // $email = $request->input('nik');
-        // $password = $request->input('nip');
-        // $response = $this->login->signInWithEmailAndPassword($email, $password);
+        return view('auth.login');
+    }
+
+    protected function validateLogin(Request $request)
+    {
         $request->validate([
-            'nik' => 'required',
-            'nip' => 'required',
+            $this->username() => 'required|string',
+            'password' => 'required|string',
         ]);
+    }
 
-        $firebaseAuth = app('firebase.auth');
-
+    protected function login(Request $request)
+    {
         try {
-            // Gunakan metode signInWithEmailAndPassword() untuk melakukan otentikasi berdasarkan email dan kata sandi
-            $firebaseAuth->signInWithEmailAndPassword($request->nik . '@blc.com', $request->nip);
+            $signAttributes = $this->auth->signInWithEmailAndPassword($request['email'], $request['password']);
+            $user = new User($signAttributes->data());
 
-            $userID = $firebaseAuth->firebaseUserId();
-            Session::put('user_id', $userID);
-            // Jika berhasil masuk, Anda tidak perlu melakukan getUserByEmailAndPassword() lagi karena signInWithEmailAndPassword()
-            // sudah mengembalikan objek User yang sesuai.
+            $uid = $signAttributes->firebaseUserId();
+            Session::put('uid', $uid);
 
-            // Autentikasi berhasil
-            // Lakukan tindakan yang diperlukan seperti menyimpan data ke sesi atau membuat token akses
+            $firebase = app('firebase.firestore')->database();
+            $getUser = $firebase->collection('users')->document($uid)->snapshot();
 
-            // Redirect ke dashboard atau halaman yang sesuai berdasarkan peran pengguna
-            Alert::success('Success', 'Berhasil Login');
-            return redirect()->route('dashboard');
-        } catch (\Kreait\Firebase\Auth\SignIn\FailedToSignIn $e) {
-            // Autentikasi gagal
-            Alert::error('Gagal', 'Gagal Login');
-            return redirect()->route('login');
-        } catch (\Kreait\Firebase\Exception\Auth\UserNotFound $e) {
-            // Pengguna tidak ditemukan di Firebase, berarti akun belum didaftarkan
-            Alert::error('Gagal', 'ID Tidak Terdaftar');
-            return redirect()->route('login');
+            if ($getUser->data()['role'] == 'manager' || $getUser->data()['role'] == 'admin' || $getUser->data()['role'] == 'director') {
+                $userDetails = app('firebase.auth')->getUser($uid);
+                Session::put('role', $getUser->data()['role']);
+                Session::put('name', $getUser->data()['name']);
+
+                Alert::success('Success', 'Login Berhasil');
+                return redirect('/admin/dashboard'); // bere route
+            }
+
+            Session::flush();
+            return redirect()->back();
+        } catch (FirebaseException $exception) {
+            Alert::error('Error', 'Login Gagal');
+            return redirect()->back();
         }
     }
 
-    public function logout()
+    public function username()
     {
-        // Lakukan tindakan logout seperti menghapus sesi atau token akses
+        return 'email';
+    }
 
-        // Redirect ke halaman login setelah logout
-        return redirect()->route('login');
+    public function logout(Request $request)
+    {
+        $this->guard()->logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        Session::flush('uid');
+        Session::flush('role');
+
+        return redirect('login');
     }
 }

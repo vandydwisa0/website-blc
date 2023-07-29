@@ -1,45 +1,60 @@
-@extends('auth.app')
+@extends('layouts.app')
+
 @section('content')
-    <div class="flex justify-center my-24">
-        <div class="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow">
-            <div class="p-6 space-y-4 md:space-y-20 sm:p-8 drop-shadow-lg">
-                <a href="#" class="flex justify-center drop-shadow-lg items-center text-2xl font-semibold text-black">
-                    <img class="w-2/12 h-2/12 drop-shadow-lg" src="../images/blc.png">
-                    Log in
-                </a>
-                <form class="space-y-4 md:space-y-6" action="{{ route('login') }}" method="POST">
-                    @csrf
-                    <div>
-                        <label for="nik" class="block mb-2 text-sm font-medium text-gray-900">Email</label>
-                        <input type="text" name="nik" id="nik"
-                            class="bg-white border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                            placeholder="nik@blc.com" required="">
-                    </div>
-                    <div>
-                        <label for="nip" class="block mb-2 text-sm font-medium text-gray-900">Password</label>
-                        <input type="password" name="nip" id="nip" placeholder="••••••••"
-                            class="bg-white border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                            required="">
-                    </div>
-                    <div class="py-4">
+    <main class="sm:container sm:mx-auto sm:max-w-lg sm:mt-10">
+        <div class="flex">
+            <div class="w-full">
+                <section class="flex flex-col break-words bg-white sm:border-1 sm:rounded-md sm:shadow-sm sm:shadow-lg">
 
-                        <button type="submit" style="background-color: #539165"
-                            class="w-full text-white focus:ring-4 focus:outline-none focus:ring-white-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center shadow-gray-400">Log
-                            in</button>
-                        @if (session('success'))
-                            <script>
-                                swal("Success", "{{ session('success') }}", "success");
-                            </script>
-                        @endif
+                    <header class="font-semibold bg-gray-200 text-gray-700 py-5 px-6 sm:py-6 sm:px-8 sm:rounded-t-md">
+                        {{ __('Login') }}
+                    </header>
 
-                        @if (session('error'))
-                            <script>
-                                swal("Error", "{{ session('error') }}", "error");
-                            </script>
-                        @endif
+                    <form class="w-full px-6 space-y-6 sm:px-10 sm:space-y-8" method="POST" action="{{ route('login') }}">
+                        @csrf
 
-                    </div>
-                </form>
+                        <div class="flex flex-wrap">
+                            <label for="nik" class="block text-gray-700 text-sm font-bold mb-2 sm:mb-4">
+                                NIK:
+                            </label>
+
+                            <input id="nik" type="text"
+                                class="form-input w-full @error('nik') border-red-500 @enderror" name="email"
+                                value="dummy1@blc.com" required autocomplete="nik" autofocus>
+
+                            @error('nik')
+                                <p class="text-red-500 text-xs italic mt-4">
+                                    {{ $message }}
+                                </p>
+                            @enderror
+                        </div>
+
+                        <div class="flex flex-wrap">
+                            <label for="password" class="block text-gray-700 text-sm font-bold mb-2 sm:mb-4">
+                                NIP:
+                            </label>
+
+                            <input id="password" type="password" value="testing123"
+                                class="form-input w-full @error('password') border-red-500 @enderror" name="password"
+                                required>
+
+                            @error('password')
+                                <p class="text-red-500 text-xs italic mt-4">
+                                    {{ $message }}
+                                </p>
+                            @enderror
+                        </div>
+
+                        <div class="flex flex-wrap">
+                            <button type="submit"
+                                class="w-full select-none font-bold whitespace-no-wrap p-3 rounded-lg text-base leading-normal no-underline text-gray-100 bg-blue-500 hover:bg-blue-700 sm:py-4">
+                                {{ __('Login') }}
+                            </button>
+                        </div>
+                    </form>
+
+                </section>
             </div>
         </div>
-    @endsection
+    </main>
+@endsection

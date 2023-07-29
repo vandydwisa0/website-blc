@@ -6,9 +6,17 @@ use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use RealRashid\SweetAlert\Facades\Alert;
+use Kreait\Firebase\Auth as FirebaseAuth;
 
 class SiswaController extends Controller
 {
+    protected $auth;
+
+    public function __construct(FirebaseAuth $auth)
+    {
+        $this->auth = $auth;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -74,9 +82,19 @@ class SiswaController extends Controller
                 $request->blcClass2,
             ];
 
-            // Simpan data ke Firebase
-            $stuRef = app('firebase.firestore')->database()->collection('users')->newDocument();
-            $stuRef->set([
+
+            $siswaProperties = [
+                'email' => $request->email,
+                'emailVerified' => true,
+                'password' => $request->phoneNumber,
+                'displayName' => "", // bisa jadi mun aya valuean te bisa assup
+            ];
+
+            $createUserAccount = $this->auth->createUser($siswaProperties);
+
+            $siswaProperties = [
+                'email' => $request->email,
+                'emailVerified' => true,
                 'name' => $request->name,
                 'placeAndDateOfBirth' => $request->placeAndDateOfBirth,
                 'gender' => $request->gender,
@@ -95,7 +113,34 @@ class SiswaController extends Controller
                 'companyBranch' => $request->companyBranch,
                 'blcClass' => $class,
                 'reference' => $request->reference,
-            ]);
+            ];
+
+            $createUser = app('firebase.firestore')->database()->collection('users')->document($createUserAccount->uid);
+            $createUser->set($siswaProperties);
+            // Simpan data ke Firebase
+            // $stuRef = app('firebase.firestore')->database()->collection('users')->newDocument();
+            // $stuRef->set([
+            //     'email' => $request->email,
+            //     'emailVerified' => true,
+            //     'name' => $request->name,
+            //     'placeAndDateOfBirth' => $request->placeAndDateOfBirth,
+            //     'gender' => $request->gender,
+            //     'religion' => $request->religion,
+            //     'child' => $child,
+            //     'class' => $request->class,
+            //     'school' => $request->school,
+            //     'phoneNumber' => $request->phoneNumber,
+            //     'parentName' => $request->parentName,
+            //     'parentPhoneNumber' => $request->parentPhoneNumber,
+            //     'parentJob' => $request->parentJob,
+            //     'homeAddress' => $request->homeAddress,
+            //     'homePhoneNumber' => $request->homePhoneNumber,
+            //     'nisBlc' => $formattedIteration,
+            //     'role' => 'siswa',
+            //     'companyBranch' => $request->companyBranch,
+            //     'blcClass' => $class,
+            //     'reference' => $request->reference,
+            // ]);
 
             // $periode = time();
             // Generate noPayment

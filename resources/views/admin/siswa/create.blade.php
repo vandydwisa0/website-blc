@@ -42,6 +42,13 @@
 
                     <div class="grid gap-4 mb-4 sm:grid-cols-4">
                         <div>
+                            <label for="email" class="block mb-2 text-sm font-medium text-gray-900 ">Email
+                                Siswa</label>
+                            <input type="email" name="email" id="email"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 "
+                                placeholder="Masukan Nama Siswa..." required="">
+                        </div>
+                        <div>
                             <label for="name" class="block mb-2 text-sm font-medium text-gray-900 ">Nama
                                 Siswa</label>
                             <input type="text" name="name" id="name"
@@ -106,7 +113,8 @@
                                 placeholder="Masukan Kelas..." required="">
                         </div>
                         <div>
-                            <label for="school" class="block mb-2 text-sm font-medium text-gray-900 ">Sekolah</label>
+                            <label for="school"
+                                class="block mb-2 text-sm font-medium text-gray-900 ">Sekolah</label>
                             <input type="text" name="school" id="school"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 "
                                 placeholder="Masukan Sekolah Asal..." required="">

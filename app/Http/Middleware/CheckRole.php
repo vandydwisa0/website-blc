@@ -11,6 +11,7 @@ class CheckRole
     public function handle(Request $request, Closure $next, ...$roles)
     {
         $user = $this->getAuthenticatedUser();
+        dd($user);
 
         if (!$user) {
             // Pengguna belum terotentikasi, arahkan ke halaman login atau tampilkan halaman tidak diizinkan

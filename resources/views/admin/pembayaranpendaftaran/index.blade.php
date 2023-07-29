@@ -42,7 +42,7 @@
                                     <tr>
                                         <th scope="col" class="px-4 py-3">No</th>
                                         <th scope="col" class="px-4 py-3">NIS BLC</th>
-                                        <th scope="col" class="px-4 py-3">Nama Pembayar</th>
+                                        <th scope="col" class="px-4 py-3">Nama Siswa</th>
                                         <th scope="col" class="px-4 py-3">Tipe Pembayaran</th>
                                         <th scope="col" class="px-4 py-3">Jumlah Bayar</th>
                                         <th scope="col" class="px-4 py-3">Status</th>

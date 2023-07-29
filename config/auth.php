@@ -14,7 +14,7 @@ return [
     */
 
     'defaults' => [
-        'guard' => 'firebase',
+        'guard' => 'web',
         'passwords' => 'users',
     ],
 
@@ -36,9 +36,9 @@ return [
     */
 
     'guards' => [
-        'firebase' => [
+        'web' => [
             'driver' => 'session',
-            'provider' => 'users',
+            'provider' => 'firebaseUser',
         ],
 
         'api' => [
@@ -66,10 +66,14 @@ return [
     */
 
     'providers' => [
-        'users' => [
-            'driver' => 'eloquent',
-            'model' => App\Models\User::class,
+        'firebaseUser' => [
+            'driver' => 'firebaseuserprovider',
+            'model' => \App\Models\User::class
         ],
+        // 'users' => [
+        //     'driver' => 'eloquent',
+        //     'model' => App\Models\User::class,
+        // ],
 
         // 'users' => [
         //     'driver' => 'database',

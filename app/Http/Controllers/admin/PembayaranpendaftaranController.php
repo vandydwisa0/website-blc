@@ -5,6 +5,7 @@ namespace App\Http\Controllers\admin;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class PembayaranpendaftaranController extends Controller
@@ -175,6 +176,7 @@ class PembayaranpendaftaranController extends Controller
             'operatorName' => $request->operatorName,
             'payAmount' => $payAmount,
             'payerName' => $request->payerName,
+            'operatorName' => Session::get('name'),
             'paymentDate' => $paymentDate,
             'paymentStatus' => $paymentStatus,
             'remainingPayment' => $remainingPayment,

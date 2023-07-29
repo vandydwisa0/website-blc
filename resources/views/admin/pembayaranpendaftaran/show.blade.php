@@ -85,7 +85,7 @@
                             <p class="flex text-gray-500 mr-2">Staff</p>
                             <p class="flex ml-44 text-gray-500">:</p>
                         </div>
-                        <p class="space-x-10 ml-2">#</p>
+                        <p class="space-x-10 ml-2">{{ $item->data()['operatorName'] }}</p>
                     </div>
 
                     <div class="flex items-center pt-2 rounded-t ">

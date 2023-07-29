@@ -4,9 +4,10 @@ namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Kreait\Firebase\Auth;
+use Kreait\Firebase\Auth as FirebaseAuth;
 use PhpParser\Node\Expr\BinaryOp\Equal;
 use RealRashid\SweetAlert\Facades\Alert;
+use Kreait\Firebase\Exception\FirebaseException;
 
 class UsersController extends Controller
 {
@@ -15,10 +16,18 @@ class UsersController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    protected $auth;
+
+    public function __construct(FirebaseAuth $auth)
+    {
+        $this->auth = $auth;
+    }
+
     public function index()
     {
         $users = app('firebase.firestore')->database()->collection('users');
-        $query = $users->where('role', '=', 'admin', 'manager', 'director');
+        $query = $users->where('role', '!=', 'siswa');
         $snapshot = $query->documents();
         return view('admin.users.index', compact('snapshot'));
     }
@@ -69,39 +78,40 @@ class UsersController extends Controller
 
     public function store(Request $request)
     {
-        if ($request->doc_id == null) {
-            // Validasi Data
-            $request->validate([]);
+        try {
 
-            // Autentikasi dengan Firebase
-            $firebaseAuth = app('firebase.auth');
-            $user = $firebaseAuth->getUserByEmailAndPassword($request->nik . '@blc.com', $request->nip);
+            $userProperties = [
+                'email' => $request->email,
+                'emailVerified' => true,
+                'password' => $request->nip,
+                'displayName' => "", // bisa jadi mun aya valuean te bisa assup
+            ];
 
-            if ($user) {
-                // Autentikasi pengguna berhasil, lanjutkan menyimpan data
-                $role = $request->role; // Anda mungkin ingin memvalidasi peran disini untuk mencegah perubahan peran yang tidak diizinkan
+            $createUserAccount = $this->auth->createUser($userProperties);
 
-                // Simpan data ke Firebase
-                $stuRef = app('firebase.firestore')->database()->collection('users')->newDocument();
-                $stuRef->set([
-                    'nik' => $request->nik,
-                    'nip' => $request->nip,
-                    'initials' => $request->initials,
-                    'name' => $request->name,
-                    'role' => $role,
-                    'phoneNumber' => $request->phoneNumber,
-                    'address' => $request->address,
-                    'placeAndDateOfBirth' => $request->placeAndDateOfBirth,
-                    'gender' => $request->gender,
-                    'religion' => $request->religion,
-                ]);
+            $userProperties = [
+                'email' => $request->email,
+                'emailVerified' => true,
+                'nik' => $request->nik,
+                'nip' => $request->nip,
+                'initials' => $request->initials,
+                'name' => $request->name,
+                'role' => $request->role,
+                'phoneNumber' => $request->phoneNumber,
+                'address' => $request->address,
+                'placeAndDateOfBirth' => $request->placeAndDateOfBirth,
+                'gender' => $request->gender,
+                'religion' => $request->religion,
+            ];
 
-                Alert::success('Success', 'Berhasil Menambah Data');
-                return redirect()->back();
-            } else {
-                // Autentikasi gagal, tampilkan pesan kesalahan atau arahkan ke halaman login
-                return redirect()->route('login')->with('error', 'Kredensial tidak valid');
-            }
+            $createUser = app('firebase.firestore')->database()->collection('users')->document($createUserAccount->uid);
+            $createUser->set($userProperties);
+
+            return redirect()->back();
+        } catch (FirebaseException $e) {
+            // bere alert amun gagal
+            Alert::error('error', 'Aya nu error fieldna');
+            return back()->withInput();
         }
     }
 
@@ -171,6 +181,5 @@ class UsersController extends Controller
      */
     public function destroy($id)
     {
-        //
     }
 }

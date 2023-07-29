@@ -28,7 +28,7 @@
                 <img class="h-auto w-1/3 mx-auto drop-shadow-md" src="../images/image1.png">
                 <div class="p-7 mx-8 space-y-4 md:space-y-5 drop-shadow-sm">
                     <p class="text-gray-900 font-light text-6xl">Selamat Datang</p>
-                    <p class="text-gray-900 font-light text-6xl">#</p>
+                    <p class="text-gray-900 font-light text-6xl">{{ Session::get('name') }}</p>
                 </div>
             </div>
         </div>

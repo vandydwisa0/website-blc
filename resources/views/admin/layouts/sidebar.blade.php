@@ -3,8 +3,10 @@
     aria-label="Sidebar">
     <div class="h-full px-3 pb-4 overflow-y-auto bg-white">
         <ul class="space-y-2">
+            {{-- @can('access-manager') --}}
 
-
+            {{--
+                @can('access-admin') --}}
             <li>
                 <a href="{{ route('dashboard.index') }}"
                     class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg  hover:bg-gray-100
@@ -13,7 +15,7 @@
                     <span class="ml-3">Dashboard</span>
                 </a>
             </li>
-
+            {{-- @endcan --}}
             <li>
                 <a href="{{ route('users.index') }}"
                     class="flex items-center p-2 text-base font-normal text-black rounded-lg hover:bg-gray-100

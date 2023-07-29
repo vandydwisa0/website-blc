@@ -54,20 +54,44 @@ Route::get('/unauthorized', function () {
 //     Route::resource('/pembayaranpendaftaran', PembayaranpendaftaranController::class);
 //     Route::resource('/pembayaran', PembayaranController::class);
 // });
+Auth::routes();
 
-Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
-    Route::resource('/dashboard', DashboardController::class)->middleware('check_roles:manager,admin,director');
-    Route::resource('/users', UsersController::class)->middleware('check_roles:manager,director');
-    Route::resource('/siswa', SiswaController::class)->middleware('check_roles:manager,admin,director');
-    Route::resource('/program', ProgramController::class)->middleware('check_roles:manager,admin,director');
-    // Route::resource('/jadwal', JadwalController::class)->middleware('check_roles:manager,admin,director');
-    Route::resource('/cabang', CabangController::class)->middleware('check_roles:manager,admin,director');
+Route::prefix('admin')->group(function () {
+    Route::middleware(['firebase_auth'])->group(function () {
+        Route::resource('/dashboard', DashboardController::class)->middleware('verify_user:admin,manager,director');
+        Route::resource('/users', UsersController::class)->middleware('verify_user:manager,director');
+        Route::resource('/siswa', SiswaController::class)->middleware('verify_user:manager,admin,director');
+        Route::resource('/program', ProgramController::class)->middleware('verify_user:manager,admin,director');
+        // Route::resource('/jadwal', JadwalController::class)->middleware('verify_user:manager,admin,director');
+        Route::resource('/cabang', CabangController::class)->middleware('verify_user:manager,admin,director');
 
-    Route::get('/get_meeting_per_weeks/{program_id}', [KelasController::class, 'get_meeting_per_weeks']);
-    Route::get('/get_class/{companyBranch}', [SiswaController::class, 'get_class']);
-    Route::resource('/kelas', KelasController::class)->middleware('check_roles:manager,admin,director');
+        Route::get('/get_meeting_per_weeks/{program_id}', [KelasController::class, 'get_meeting_per_weeks']);
+        Route::get('/get_class/{companyBranch}', [SiswaController::class, 'get_class']);
+        Route::resource('/kelas', KelasController::class)->middleware('verify_user:manager,admin,director');
 
-    // Route::resource('/guru', GuruController::class);
-    Route::resource('/pembayaranpendaftaran', PembayaranpendaftaranController::class)->middleware('check_roles:manager,admin,director');
-    Route::resource('/pembayaran', PembayaranController::class)->middleware('check_roles:manager,admin,director');
+        // Route::resource('/guru', GuruController::class);
+        Route::resource('/pembayaranpendaftaran', PembayaranpendaftaranController::class)->middleware('verify_user:manager,admin,director');
+        Route::resource('/pembayaran', PembayaranController::class)->middleware('verify_user:manager,admin,director');
+    });
 });
+
+// Route::group(['prefix' => 'admin', 'middleware' => ['firebase_auth']], function () {
+//     Route::resource('/dashboard', DashboardController::class)->middleware('verify_user:manager,director');
+//     Route::resource('/users', UsersController::class)->middleware('verify_user:manager,director');
+//     Route::resource('/siswa', SiswaController::class)->middleware('verify_user:manager,admin,director');
+//     Route::resource('/program', ProgramController::class)->middleware('verify_user:manager,admin,director');
+//     // Route::resource('/jadwal', JadwalController::class)->middleware('verify_user:manager,admin,director');
+//     Route::resource('/cabang', CabangController::class)->middleware('verify_user:manager,admin,director');
+
+//     Route::get('/get_meeting_per_weeks/{program_id}', [KelasController::class, 'get_meeting_per_weeks']);
+//     Route::get('/get_class/{companyBranch}', [SiswaController::class, 'get_class']);
+//     Route::resource('/kelas', KelasController::class)->middleware('verify_user:manager,admin,director');
+
+//     // Route::resource('/guru', GuruController::class);
+//     Route::resource('/pembayaranpendaftaran', PembayaranpendaftaranController::class)->middleware('verify_user:manager,admin,director');
+//     Route::resource('/pembayaran', PembayaranController::class)->middleware('verify_user:manager,admin,director');
+// });
+
+
+
+Route::get('/home', [\App\Http\Controllers\HomeController::class, 'index'])->name('home');

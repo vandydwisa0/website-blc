@@ -17,10 +17,28 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name',
         'email',
-        'password',
+        'nik',
+        'nip',
+        'initials',
+        'name',
+        'role',
+        'phoneNumber',
+        'address',
+        'placeAndDateOfBirth',
+        'gender',
+        'religion',
     ];
+
+    public function getAuthIdentifierName()
+    {
+        return 'localId';
+    }
+
+    public function getAuthIdentifier()
+    {
+        return $this->localId;
+    }
 
     /**
      * The attributes that should be hidden for arrays.
