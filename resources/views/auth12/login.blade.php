@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="flex justify-center my-24">
+    <<div class="flex justify-center my-24">
         <div class="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow">
             <div class="p-6 space-y-4 md:space-y-20 sm:p-8 drop-shadow-lg">
                 <a href="#" class="flex justify-center drop-shadow-lg items-center text-2xl font-semibold text-black">
@@ -18,7 +18,7 @@
 
                         <input id="nik" type="text"
                             class="bg-white border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 @error('nik') border-red-500 @enderror"
-                            name="email" value="" required autocomplete="nik" autofocus placeholder="name@blc.com">
+                            name="email" value="dummy1@blc.com" required autocomplete="nik" autofocus>
 
                         @error('nik')
                             <p class="text-red-500 text-xs italic mt-4">
@@ -32,7 +32,7 @@
                             NIP:
                         </label>
 
-                        <input id="password" type="password" value="" placeholder="password"
+                        <input id="password" type="password" value="testing123"
                             class="bg-white border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 @error('password') border-red-500 @enderror"
                             name="password" required>
 
@@ -44,7 +44,7 @@
                     </div>
 
                     <div class="py-4">
-                        <button type="submit" style="background-color: #539165"
+                        <button type="submit"
                             class="w-full text-white focus:ring-4 focus:outline-none focus:ring-white-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center shadow-gray-400">
                             {{ __('Login') }}
                         </button>

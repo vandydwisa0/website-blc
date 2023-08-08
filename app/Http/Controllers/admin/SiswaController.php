@@ -5,6 +5,7 @@ namespace App\Http\Controllers\admin;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 use RealRashid\SweetAlert\Facades\Alert;
 use Kreait\Firebase\Auth as FirebaseAuth;
 
@@ -22,20 +23,36 @@ class SiswaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $siswa = app('firebase.firestore')->database()->collection('users');
         $query = $siswa->where('role', '=', 'siswa');
+
+        // // Check if a search query is provided
+        // if ($request->has('cari') && $request->input('cari') !== '') {
+        //     $searchTerm = $request->input('cari');
+
+        //     // Check if the 'nisBlc' field exists in Firestore before performing the search
+        //     $nisBlcExists = $siswa->where('nisBlc', '=', $searchTerm)->documents()->isEmpty();
+        //     if ($nisBlcExists) {
+        //         return redirect();
+        //     }
+
+        //     $query = $query->where('nisBlc', '>=', $searchTerm)
+        //         ->where('nisBlc', '<=', $searchTerm . "\uf8ff");
+        //     dd($query);
+        // }
+
         $snapshot = $query->documents();
+        // dd($snapshot);
         $cabang = app('firebase.firestore')->database()->collection('companyBranch')->documents();
         $kelas = app('firebase.firestore')->database()->collection('class')->documents();
 
-        // foreach ($snapshot as $item) {
-        //     dd($item->data()['blcClass'][0]);
-        // }
-
         return view('admin.siswa.index', compact('snapshot', 'cabang', 'kelas'));
     }
+
+
+
 
     /**
      * Show the form for creating a new resource.
@@ -81,7 +98,8 @@ class SiswaController extends Controller
                 $request->blcClass,
                 $request->blcClass2,
             ];
-
+            // Tentukan jumlah pembayaran pendaftaran berdasarkan jumlah kelas yang dimiliki siswa
+            $numRegistrationPayments = ($request->blcClass2) ? 2 : 1;
 
             $siswaProperties = [
                 'email' => $request->email,
@@ -117,88 +135,80 @@ class SiswaController extends Controller
 
             $createUser = app('firebase.firestore')->database()->collection('users')->document($createUserAccount->uid);
             $createUser->set($siswaProperties);
+
             // Simpan data ke Firebase
-            // $stuRef = app('firebase.firestore')->database()->collection('users')->newDocument();
-            // $stuRef->set([
-            //     'email' => $request->email,
-            //     'emailVerified' => true,
-            //     'name' => $request->name,
-            //     'placeAndDateOfBirth' => $request->placeAndDateOfBirth,
-            //     'gender' => $request->gender,
-            //     'religion' => $request->religion,
-            //     'child' => $child,
-            //     'class' => $request->class,
-            //     'school' => $request->school,
-            //     'phoneNumber' => $request->phoneNumber,
-            //     'parentName' => $request->parentName,
-            //     'parentPhoneNumber' => $request->parentPhoneNumber,
-            //     'parentJob' => $request->parentJob,
-            //     'homeAddress' => $request->homeAddress,
-            //     'homePhoneNumber' => $request->homePhoneNumber,
-            //     'nisBlc' => $formattedIteration,
-            //     'role' => 'siswa',
-            //     'companyBranch' => $request->companyBranch,
-            //     'blcClass' => $class,
-            //     'reference' => $request->reference,
-            // ]);
+            // Generate noPayment untuk setiap pembayaran pendaftaran
+            for ($i = 1; $i <= $numRegistrationPayments; $i++) {
+                $siswa = app('firebase.firestore')->database()->collection('payment')->documents()->size() + 1;
+                $group = ((int)(($siswa - 1) / 500)) + 1;
+                $char = (($group - 1) % 26) + ord('E');
+                $abjad = '';
+                if ($char > ord('Z')) {
+                    $abjad = chr($char - ord('Z') - 1 + ord('A'));
+                } else {
+                    $abjad = chr($char);
+                }
+                $formatNopaymentNumber = str_pad((($siswa - 1) % 500) + 1, 5, '0', STR_PAD_LEFT);
+                $formatNopayment = $abjad . $formatNopaymentNumber;
 
-            // $periode = time();
-            // Generate noPayment
-            $siswa = app('firebase.firestore')->database()->collection('payment')->documents()->size() + 1;
-            $group = ((int)(($siswa - 1) / 500)) + 1;
-            $char = (($group - 1) % 26) + ord('E'); // Ubah 'A' menjadi 'E'
-            $abjad = '';
-            if ($char > ord('Z')) {
-                $abjad = chr($char - ord('Z') - 1 + ord('A'));
-            } else {
-                $abjad = chr($char);
+                // Hasil akhir noPayment
+                $noPayment = $formatNopayment;
+
+                // $paymentDate = Carbon::now('Asia/Jakarta')->format('d F Y H:i'); // Tanggal saat ini dalam format yang diinginkan
+                $paymentDate = Carbon::now('Asia/Jakarta'); // Tanggal saat ini dalam format yang diinginkan
+
+                // Ambil tahun dari tanggal pembayaran (paymentDate)
+                $yearPaid = Carbon::now()->isoFormat('Y');
+
+                // Update data pembayaran pendaftaran
+                $nominal = 250000; // Atur nominal menjadi Rp 250.000
+                $nominal = str_replace(".", "", $nominal);
+                $discount = str_replace(".", "", $request['discount']);
+                $payAmount = str_replace(".", "", $request['payAmount']);
+                $remainingPayment = str_replace(".", "", $request['remainingPayment']);
+
+                // Tentukan nilai paymentStatus berdasarkan nilai payAmount
+                if ($payAmount == $nominal) {
+                    $paymentStatus = 'Lunas';
+                } elseif ($remainingPayment > 0) {
+                    $paymentStatus = 'Belum Lunas';
+                } else {
+                    $paymentStatus = 'Lunas';
+                }
+
+                // Assuming you have the UID of the user from some previous code
+                $uid = $createUserAccount->uid;
+
+                // Retrieve the user's document from the 'users' collection based on their UID
+                $userDocRef = app('firebase.firestore')->database()->collection('users')->document($uid);
+                $userDoc = $userDocRef->snapshot();
+                $payerId = $userDoc->id();
+
+                // Create a new registration payment document for each class
+                $paymentRef = app('firebase.firestore')->database()->collection('payment')->newDocument();
+                $paymentRef->set([
+                    'payerId' => $payerId,
+                    'blcClass' => $class[$i - 1], // Get the class based on the iteration index
+                    'discount' => intval($discount),
+                    'nisBlc' => $formattedIteration,
+                    'noPayment' => $noPayment,
+                    'nominal' => intval($nominal),
+                    'operatorName' => Session::get('name'),
+                    'payAmount' => $request->payAmount,
+                    'payerName' => $request->name,
+                    'paymentDate' => $paymentDate,
+                    'paymentStatus' => "Belum Dibayar",
+                    'paymentType' => 'Pendaftaran',
+                    'remainingPayment' => intval($remainingPayment),
+                    'yearPaid' => strval($yearPaid),
+                ]);
             }
-            $formatNopaymentNumber = str_pad((($siswa - 1) % 500) + 1, 5, '0', STR_PAD_LEFT); // Ubah '3' menjadi '5'
-            $formatNopayment = $abjad . $formatNopaymentNumber; // Hilangkan '0' pada awal string
-
-            // Hasil akhir noPayment
-            $noPayment = $formatNopayment;
-
-            // Tambahkan kolom paymentDate dengan tanggal saat ini tanpa waktu dan timezone
-            $paymentDate = Carbon::now()->toDayDateTimeString(); // Tanggal saat ini dalam format yang diinginkan
-
-            // Ambil tahun dari tanggal pembayaran (paymentDate)
-            $yearPaid = Carbon::parse($paymentDate)->year;
-
-            // // Tambahkan data pembayaran pendaftaran
-            $nominal = 250000; // Atur nominal menjadi Rp 250.000
-
-            // Tentukan nilai paymentStatus berdasarkan nilai payAmount
-            if ($request->payAmount == 0) {
-                $paymentStatus = 'Belum Lunas';
-            } elseif ($request->payAmount >= $nominal['nominal']) {
-                $paymentStatus = 'Lunas';
-            } else {
-                $paymentStatus = 'Belum Lunas';
-            }
-
-            $paymentRef = app('firebase.firestore')->database()->collection('payment')->newDocument();
-            $paymentRef->set([
-                'blcClass' => $class,
-                'discount' => $request->discount,
-                'nisBlc' => $formattedIteration,
-                'noPayment' => $noPayment,
-                'nominal' => $nominal,
-                'operatorName' => $request->operatorName,
-                'payAmount' => $request->payAmount,
-                'payerName' => $request->name,
-                'paymentDate' => $paymentDate,
-                'paymentStatus' => "Belum Dibayar",
-                'paymentType' => 'Pendaftaran',
-                'remainingPayment' => $request->remainingPayment,
-                'yearPaid' => $yearPaid,
-            ]);
-
 
             Alert::success('Success', 'Success Menambah Data');
             return redirect()->back();
         }
     }
+
 
     /**
      * Display the specified resource.

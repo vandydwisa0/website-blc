@@ -39,10 +39,15 @@
                         <p class="mb-2 text-lg font-semibold text-gray-900 ">Invoice</p>
                         <div class="flex justify-between">
                             <p class="flex flex-row text-gray-500">Tanggal Pembayaran :</p>
-                            <p class="space-x-10 ml-2">{{ $item->data()['paymentDate'] }}</p>
+                            <p class="space-x-10 ml-2"> @php
+                                $date = Carbon\Carbon::parse($item->data()['paymentDate']);
+                                $date->settings(['formatFunction' => 'translatedFormat']);
+                                $paymentDate = $date->format('l, j F Y');
+                            @endphp
+                                {{ $paymentDate }}</p>
                         </div>
                     </div>
-                    <div class="flex items-center pt-7 rounded-t border-t ">
+                    <div class="flex items-center pt-5 rounded-t border-t ">
                         <div class="flex flex-row">
                             <p class="flex text-gray-500 mr-0.5">No Pembayaran</p>
                             <p class="flex ml-28 text-gray-500">:</p>
@@ -80,7 +85,7 @@
                         <p class="space-x-10 ml-2">{{ $item->data()['nisBlc'] }}</p>
                     </div>
 
-                    <div class="flex items-center mt-2 pb-7 rounded-t ">
+                    <div class="flex items-center mt-2 pb-5 rounded-t ">
                         <div class="flex flex-row">
                             <p class="flex text-gray-500 mr-2">Staff</p>
                             <p class="flex ml-44 text-gray-500">:</p>
@@ -96,7 +101,7 @@
                         <p class="space-x-10 ml-2">{{ $item->data()['paymentType'] }}</p>
                     </div>
 
-                    <div class="flex items-center py-2 rounded-t ">
+                    <div class="flex items-center py-2 pb-5 rounded-t ">
                         <div class="flex flex-row">
                             <p class="flex text-gray-500">Status Pembayaran</p>
                             <p class="flex ml-24 text-gray-500">:</p>
@@ -104,14 +109,14 @@
                         <p class="space-x-10 ml-2">{{ $item->data()['paymentStatus'] }}</p>
                     </div>
 
-                    <div class="flex items-center pt-7 border-t rounded-t ">
+                    <div class="flex items-center pt-5 border-t rounded-t ">
                         <div class="flex flex-row">
                             <p class="flex text-gray-500">Nominal</p>
                             <p class="flex ml-40 text-gray-500">: Rp </p>
                         </div>
                         <p class="space-x-10 ml-2">{{ $item->data()['nominal'] }}</p>
                     </div>
-                    <div class="flex items-center py-2 rounded-t ">
+                    <div class="flex items-center py-2 pb-5 rounded-t ">
                         <div class="flex flex-row">
                             <p class="flex text-gray-500 -mr-1">Discount</p>
                             <p class="flex ml-40 text-gray-500">: Rp </p>
@@ -119,14 +124,14 @@
                         <p class="space-x-10 ml-2">{{ $item->data()['discount'] }}</p>
                     </div>
 
-                    <div class="flex items-end pt-7 border-t rounded-t ">
+                    <div class="flex items-end pt-5 border-t rounded-t ">
                         <div class="flex flex-row">
                             <p class="flex font-bold text-gray-500 ml-72">Jumlah Bayar</p>
                             <p class="flex font-bold ml-11 text-gray-500">: Rp</p>
                         </div>
                         <p class=" font-bold space-x-10 ml-2">{{ $item->data()['payAmount'] }}</p>
                     </div>
-                    <div class="flex items-end pb-7 rounded-t ">
+                    <div class="flex items-end pb-5 rounded-t ">
                         <div class="flex flex-row">
                             <p class="flex font-bold text-gray-500 ml-72">Sisa Pembayaran</p>
                             <p class="flex font-bold ml-5 text-gray-500">: Rp</p>
@@ -135,15 +140,23 @@
                     </div>
 
                     {{-- Tombol Print --}}
-
                     <div class="flex items-end justify-end pt-5 space-x-2 border-t border-gray-200 rounded-b ">
                         <button type="button"
                             class="block w-full md:w-auto font-medium rounded-lg text-sm px-5 py-2.5 text-center text-white"
                             style="background-color: #539165">
-                            <box-icon type='solid' color='white' name='printer'></box-icon>
-                            <a class="items-center" href="#"></a>
+                            {{-- <box-icon type='solid' color='white' name='printer'></box-icon> --}}
+                            <a class="items-center"
+                                href="{{ 'invoicedetails/' . $item->data()['noPayment'] }}">Print</a>
                         </button>
                     </div>
+                    {{-- <div class="flex items-end justify-end pt-5 space-x-2 border-t border-gray-200 rounded-b ">
+                        <button type="button"
+                            class="block w-full md:w-auto font-medium rounded-lg text-sm px-5 py-2.5 text-center text-white"
+                            style="background-color: #539165">
+                            <box-icon type='solid' color='white' name='printer'></box-icon>
+                            <a class="items-center" href="{{ 'invoicedetails/' . $item->id() }}"></a>
+                        </button>
+                    </div> --}}
                 </form>
             </div>
         </div>

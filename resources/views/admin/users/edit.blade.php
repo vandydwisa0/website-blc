@@ -44,27 +44,33 @@
                     @csrf
 
                     <div class="grid gap-4 mb-4 sm:grid-cols-3">
+                        {{-- <div>
+                            <label for="email" class="block mb-2 text-sm font-medium text-gray-900 ">Email</label>
+                            <input type="email" name="email" id="email"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 "
+                                placeholder="Masukan NIK..." required="">
+                        </div> --}}
                         <div>
                             <label for="nik" class="block mb-2 text-sm font-medium text-gray-900 ">NIK</label>
-                            <input type="text" name="nik" id="nik"
+                            <input type="text" name="nik" id="nik" value="{{ $item->data()['nik'] }}"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 "
                                 placeholder="Masukan NIK..." required="">
                         </div>
                         <div>
                             <label for="nip" class="block mb-2 text-sm font-medium text-gray-900 ">NIP</label>
-                            <input type="text" name="nip" id="nip"
+                            <input type="text" name="nip" id="nip" value="{{ $item->data()['nip'] }}"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 "
                                 placeholder="Masukan NIP..." required="">
                         </div>
                         <div>
                             <label for="initials" class="block mb-2 text-sm font-medium text-gray-900 ">Initials</label>
-                            <input type="text" name="initials" id="initials"
+                            <input type="text" name="initials" id="initials" value="{{ $item->data()['initials'] }}"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 "
                                 placeholder="Masukan Initials..." required="">
                         </div>
                         <div>
                             <label for="name" class="block mb-2 text-sm font-medium text-gray-900 ">Nama</label>
-                            <input type="text" name="name" id="name"
+                            <input type="text" name="name" id="name" value="{{ $item->data()['name'] }}"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 "
                                 placeholder="Masukan Nama..." required="">
                         </div>
@@ -85,6 +91,7 @@
                             <label for="phoneNumber" class="block mb-2 text-sm font-medium text-gray-900 ">No
                                 Telephone</label>
                             <input type="text" name="phoneNumber" id="phoneNumber"
+                                value="{{ $item->data()['phoneNumber'] }}"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 "
                                 placeholder="Masukan No Telephone..." required="">
                         </div>
@@ -95,9 +102,10 @@
                                 placeholder="Masukan Alamat..." required="">
                         </div>
                         <div>
-                            <label for="placeAndDateOfBirth" class="block mb-2 text-sm font-medium text-gray-900 ">No
-                                Telephone</label>
+                            <label for="placeAndDateOfBirth"
+                                class="block mb-2 text-sm font-medium text-gray-900 ">Tempat, Tanggal Lahir</label>
                             <input type="text" name="placeAndDateOfBirth" id="placeAndDateOfBirth"
+                                value="{{ $item->data()['placeAndDateOfBirth'] }}"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 "
                                 placeholder="Masukan Tempat, Tanggal Lahir..." required="">
                         </div>
@@ -109,7 +117,8 @@
                                 required data-live-search="true">
                                 <option value="" selected>Select Gender</option>
                                 @foreach (['laki-laki', 'perempuan'] as $gender)
-                                    <option value="{{ $gender }}">
+                                    <option value="{{ $gender }}"
+                                        {{ $gender == $item->data()['gender'] ? 'selected' : '' }}>
                                         {{ ucfirst($gender) }}
                                     </option>
                                 @endforeach
@@ -122,7 +131,8 @@
                                 required data-live-search="true">
                                 <option value="" selected>Select Religion</option>
                                 @foreach (['islam', 'kristen', 'budha', 'hindu'] as $religionOption)
-                                    <option value="{{ $religionOption }}">
+                                    <option value="{{ $religionOption }}"
+                                        {{ $religionOption == $item->data()['religion'] ? 'selected' : '' }}>
                                         {{ ucfirst($religionOption) }}
                                     </option>
                                 @endforeach

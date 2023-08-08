@@ -6,6 +6,7 @@ use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvid
 use Illuminate\Support\Facades\Gate;
 use App\Firebase\Guard as FirebaseGuard;
 use App\Firebase\FirebaseUserProvider;
+use Illuminate\Support\Facades\Auth;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -27,27 +28,28 @@ class AuthServiceProvider extends ServiceProvider
     {
         // $this->registerPolicies();
         // Gate::define('access-manager', function ($user) {
-        //     return $user->role === 'manager';
+        //     return $user->role === 'Manager';
         // });
 
         // Gate::define('access-admin', function ($user) {
-        //     return $user->role === 'admin';
+        //     return $user->role === 'Admin';
         // });
 
         // Gate::define('access-director', function ($user) {
-        //     return $user->role === 'director';
+        //     return $user->role === 'Director';
         // });
         $this->registerPolicies();
-        Gate::define('access-manager', function ($user) {
-            return $user->role === 'manager';
+
+        Gate::define('isManager', function ($user) {
+            return $user->role === 'Manager';
         });
 
-        Gate::define('access-admin', function ($user) {
-            return $user->role === 'admin';
+        Gate::define('isDirector', function ($user) {
+            return $user->role === 'Director';
         });
 
-        Gate::define('access-director', function ($user) {
-            return $user->role === 'director';
+        Gate::define('isAdmin', function ($user) {
+            return $user->role === 'Admin';
         });
 
         \Illuminate\Support\Facades\Auth::provider('firebaseuserprovider', function ($app, array $config) {

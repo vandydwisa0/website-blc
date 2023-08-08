@@ -55,37 +55,47 @@
                         <div>
                             <label for="nominal" class="block mb-2 text-sm font-medium text-gray-900 ">Nominal Yang
                                 Harus Dibayar</label>
-                            <input type="number" name="nominal" id="nominal" value="{{ $item->data()['nominal'] }}"
+                            <input type="text" name="nominal" id="nominal" value="{{ $item->data()['nominal'] }}"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 "
                                 placeholder="Nominal..." readonly>
                         </div>
                         <div>
                             <label for="discount" class="block mb-2 text-sm font-medium text-gray-900 ">Discount</label>
-                            <input type="number" name="discount" id="discount" value="{{ $item->data()['discount'] }}"
+                            <input type="text" name="discount" id="discount" value="{{ $item->data()['discount'] }}"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 "
                                 placeholder="Masukan Nominal Discount...">
                         </div>
                         <div>
                             <label for="payAmount" class="block mb-2 text-sm font-medium text-gray-900 ">Jumlah
                                 Bayar</label>
-                            <input type="number" name="payAmount" id="payAmount"
+                            <input type="text" name="payAmount" id="payAmount"
                                 value="{{ $item->data()['payAmount'] }}"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 "
                                 placeholder="Masukan Jumlah Bayar..." required="">
                         </div>
                         <div>
-                            <label for="paymentType" class="block mb-2 text-sm font-medium text-gray-900 ">Status
-                                Pembayaran</label>
-                            <select id="paymentType" name="paymentType"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 ">
-                                @foreach (['Lunas', 'Belum Lunas'] as $paymentType)
-                                    <option value="{{ $paymentType }}"
-                                        {{ $item->data()['paymentType'] === $paymentType ? 'selected' : '' }}>
-                                        {{ ucfirst($paymentType) }}
-                                    </option>
-                                @endforeach
+                            <label for="blcClass" class="block mb-2 text-sm font-medium text-gray-900">Kelas BLC</label>
+                            <select id="blcClass" name="blcClass"
+                                class="mb-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5">
+                                <option value="">Select Kelas Blc</option>
+                                @isset($item->data()['blcClass'])
+                                    @if (is_array($item->data()['blcClass']))
+                                        @foreach ($item->data()['blcClass'] as $class)
+                                            <option value="{{ $class }}"
+                                                {{ $class == $item->data()['blcClass'] ? 'selected' : '' }}>
+                                                {{ ucfirst($class) }}
+                                            </option>
+                                        @endforeach
+                                    @else
+                                        <option value="{{ $item->data()['blcClass'] }}" selected>
+                                            {{ ucfirst($item->data()['blcClass']) }}
+                                        </option>
+                                    @endif
+                                @endisset
                             </select>
                         </div>
+
+
 
                     </div>
                     <!-- Modal footer -->
@@ -105,5 +115,32 @@
 <script>
     function reset() {
         document.getElementById('edit').reset()
+    }
+
+    // Get the initial values from the input fields
+    var initialNominalValue = document.getElementById('nominal').value;
+    var initialDiscountValue = document.getElementById('discount').value;
+    var initialPayAmountValue = document.getElementById('payAmount').value;
+
+    // Format and set the initial values back to the input fields
+    document.getElementById('nominal').value = formatRupiah(initialNominalValue);
+    document.getElementById('discount').value = formatRupiah(initialDiscountValue);
+    document.getElementById('payAmount').value = formatRupiah(initialPayAmountValue);
+
+
+    function formatRupiah(angka, prefix) {
+        var number_string = angka.replace(/[^,\d]/g, '').toString(),
+            split = number_string.split(','),
+            sisa = split[0].length % 3,
+            rupiah = split[0].substr(0, sisa),
+            ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+        if (ribuan) {
+            separator = sisa ? '.' : '';
+            rupiah += separator + ribuan.join('.');
+        }
+
+        rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+        return prefix == undefined ? rupiah : (rupiah ? rupiah : '');
     }
 </script>

@@ -5,13 +5,13 @@
             <h1 class="mb-2 text-gray-700 font-bold text-4xl">Data Siswa</h1>
 
             <section class="bg-gray-50 ">
-                <div class="flex-auto mx-auto">
+                <div class="flex-auto mx-auto max-w-full">
                     <!-- Start coding here -->
                     <div class="bg-white  relative shadow-md sm:rounded-lg overflow-hidden">
                         <div
                             class="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
                             <div class="w-full md:w-1/2">
-                                <form class="flex items-center">
+                                <form action="{{ route('siswa.index') }}" method="GET">
                                     <label for="simple-search" class="sr-only">Search</label>
                                     <div class="relative w-full">
                                         <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -23,10 +23,12 @@
                                             </svg>
                                         </div>
                                         <div class="flex flex-row">
-                                            <input type="text" id="cari" name="cari" {{-- value="{{ request('cari') }}" --}}
+                                            <input type="text" id="myInput" onkeyup="myFunction()" name="cari"
+                                                {{-- value="{{ request('cari') }}" --}}
                                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2    -500 -500"
                                                 placeholder="Search" name="search">
-                                            {{-- <button type="submit" class=" ml-4 block w-full md:w-auto font-medium rounded-lg text-sm px-5 py-2.5 text-center text-white bg-dwisa-400 hover:bg-dwisa-300 focus:ring-dwisa-300  -200 -300">Cari</button> --}}
+                                            {{-- <button type="submit"
+                                                class=" ml-4 block w-full md:w-auto font-medium rounded-lg text-sm px-5 py-2.5 text-center text-white ">Cari</button> --}}
                                         </div>
                                     </div>
                                 </form>
@@ -39,7 +41,7 @@
                             </div>
                         </div>
                         <div class="relative px-4 py-4 overflow-x-auto">
-                            <table class="min-w-full text-sm text-left text-gray-500 ">
+                            <table id="myTable" class="min-w-full text-sm text-left text-gray-500 ">
                                 <thead class="text-xs text-gray-700 uppercase bg-gray-50  ">
                                     <tr>
                                         <th scope="col" class="px-4 py-3">NIS BLC</th>
@@ -54,31 +56,31 @@
                                 <tbody>
 
                                     @foreach ($snapshot as $item)
-                                        <tr class="border-b "></tr>
-                                        <th scope="row" class="px-4 py-3">{{ $item->data()['nisBlc'] }}</th>
-                                        <td class="px-4 py-3">{{ $item->data()['name'] }}</td>
-                                        <td class="px-4 py-3">
-                                            @if (!empty($item->data()['blcClass']))
-                                                @foreach ($item->data()['blcClass'] as $blcClass)
-                                                    @foreach (explode(PHP_EOL, $blcClass) as $blc)
-                                                        {{ $blc }}<br>
+                                        <tr class="border-b ">
+                                            <td scope="row" class="px-4 py-3">{{ $item->data()['nisBlc'] }}</td>
+                                            <td class="px-4 py-3">{{ $item->data()['name'] }}</td>
+                                            <td class="px-4 py-3">
+                                                @if (!empty($item->data()['blcClass']))
+                                                    @foreach ($item->data()['blcClass'] as $blcClass)
+                                                        @foreach (explode(PHP_EOL, $blcClass) as $blc)
+                                                            {{ $blc }}<br>
+                                                        @endforeach
                                                     @endforeach
-                                                @endforeach
-                                            @else
-                                                <span>No Education</span>
-                                            @endif
-                                        </td>
-                                        <td class="px-4 py-3">{{ $item->data()['placeAndDateOfBirth'] }}</td>
-                                        <td class="px-4 py-3">{{ $item->data()['phoneNumber'] }}</td>
-                                        {{-- <td class="px-4 py-3">
+                                                @else
+                                                    <span>No Education</span>
+                                                @endif
+                                            </td>
+                                            <td class="px-4 py-3">{{ $item->data()['placeAndDateOfBirth'] }}</td>
+                                            <td class="px-4 py-3">{{ $item->data()['phoneNumber'] }}</td>
+                                            {{-- <td class="px-4 py-3">
                                                 {{ $item->data()['child']['childNumber'] }}
                                                 {{ $item->data()['child']['numberOfSiblings'] }}
                                             </td> --}}
-                                        <td class="flex px-6 py-4 items-center justify-center">
-                                            @include('admin.siswa.edit')
-                                            @include('admin.siswa.delete')
-                                            @include('admin.siswa.show')
-                                        </td>
+                                            <td class="flex px-6 py-4 items-center justify-center">
+                                                @include('admin.siswa.edit')
+                                                @include('admin.siswa.delete')
+                                                @include('admin.siswa.show')
+                                            </td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -93,4 +95,33 @@
 
         </div>
     </div>
+
+    <script>
+        function myFunction() {
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("myInput");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("myTable");
+            tr = table.getElementsByTagName("tr");
+
+            for (i = 0; i < tr.length; i++) {
+                // Ganti indeks [0] dengan [1] untuk memfilter kolom NISBLC
+                tdNISBLC = tr[i].getElementsByTagName("td")[0];
+                tdName = tr[i].getElementsByTagName("td")[1];
+
+                if (tdName || tdNISBLC) {
+                    txtValueName = tdName.textContent || tdName.innerText;
+                    txtValueNISBLC = tdNISBLC.textContent || tdNISBLC.innerText;
+
+                    // Gunakan operator "atau" (||) untuk mencocokkan dengan salah satu kriteria
+                    if (txtValueName.toUpperCase().indexOf(filter) > -1 || txtValueNISBLC.toUpperCase().indexOf(filter) > -
+                        1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+    </script>
 @endsection

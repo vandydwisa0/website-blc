@@ -15,7 +15,7 @@
                 <div class="flex items-center">
                     <div class="flex items-center ml-3">
                         <div>
-                            <button type="button" class="flex justify-end text-sm" aria-expanded="false"
+                            <button type="button" class="flex justify-end text-sm ml-10" aria-expanded="false"
                                 data-dropdown-toggle="dropdown-user">
                                 <span class="sr-only">Open user menu</span>
                                 <img class="w-2/12 h-2/12 justify-center drop-shadow-sm" src="../images/image5.png">
@@ -24,9 +24,9 @@
                         <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded shadow"
                             id="dropdown-user">
                             <div class="px-4 py-3" role="none">
-                                <p class="text-sm text-gray-900 dark:text-white" role="none">
+                                <p class="text-sm text-gray-900" role="none">
                                     Selamat datang
-                                    {{-- {{ auth()->data()['name'] }} --}}
+                                    {{ Session::get('name') }}
                                 </p>
                             </div>
                             <ul class="py-1" role="none">

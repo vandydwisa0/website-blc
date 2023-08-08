@@ -4,6 +4,7 @@ namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Google\Cloud\Firestore\FirestoreClient;
 
 class DashboardController extends Controller
 {
@@ -14,7 +15,37 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        return view('admin.dashboard.index');
+        // Jumlah Staff
+        $usersCollection = app('firebase.firestore')->database()->collection('users');
+        $query = $usersCollection->where('role', '!=', 'siswa');
+        $querySnapshot = $query->documents();
+        $numberOfUsers = $querySnapshot->size();
+
+        // Jumlah Siswa
+        $siswaCollection = app('firebase.firestore')->database()->collection('users');
+        $query = $siswaCollection->where('role', '=', 'siswa');
+        $querySnapshot = $query->documents();
+        $numberOfSiswa = $querySnapshot->size();
+
+        // Jumlah Kelass
+        $kelasCollection = app('firebase.firestore')->database()->collection('class');
+        $querySnapshot = $kelasCollection->documents();
+        $numberOfKelas = $querySnapshot->size();
+        // Jumlah Program
+        $programCollection = app('firebase.firestore')->database()->collection('program');
+        $querySnapshot = $programCollection->documents();
+        $numberOfProgram = $querySnapshot->size();
+        // Jumlah Cabang
+        $cabangCollection = app('firebase.firestore')->database()->collection('companyBranch');
+        $querySnapshot = $cabangCollection->documents();
+        $numberOfCabang = $querySnapshot->size();
+        return view('admin.dashboard.index', compact(
+            'numberOfUsers',
+            'numberOfSiswa',
+            'numberOfKelas',
+            'numberOfProgram',
+            'numberOfCabang',
+        ));
     }
 
     /**

@@ -12,6 +12,7 @@ use App\Http\Controllers\admin\PenggunaController;
 use App\Http\Controllers\admin\ProgramController;
 use App\Http\Controllers\admin\SiswaController;
 use App\Http\Controllers\admin\UsersController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -26,7 +27,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth.login');
 });
 // Rute publik yang dapat diakses oleh semua pengguna
 // Route::get('/login', [LoginController::class, 'index'])->name('login');
@@ -60,7 +61,11 @@ Route::prefix('admin')->group(function () {
     Route::middleware(['firebase_auth'])->group(function () {
         Route::resource('/dashboard', DashboardController::class)->middleware('verify_user:admin,manager,director');
         Route::resource('/users', UsersController::class)->middleware('verify_user:manager,director');
+        // Route::post('/update-email-verification/{id}', 'StaffController@updateEmailVerification')->name('updateEmailVerification');
+        // Route::get('/update-email-verification/{id}', UsersController::class, 'updateEmailVerification');
+        // Route::post('/update/{id}', UsersController::class, 'updateEmailVerification');
         Route::resource('/siswa', SiswaController::class)->middleware('verify_user:manager,admin,director');
+        // Route::get('/siswa', [SiswaController::class, 'index'])->name('siswa.index')->middleware('verify_user:manager,admin,director');
         Route::resource('/program', ProgramController::class)->middleware('verify_user:manager,admin,director');
         // Route::resource('/jadwal', JadwalController::class)->middleware('verify_user:manager,admin,director');
         Route::resource('/cabang', CabangController::class)->middleware('verify_user:manager,admin,director');
@@ -70,7 +75,20 @@ Route::prefix('admin')->group(function () {
         Route::resource('/kelas', KelasController::class)->middleware('verify_user:manager,admin,director');
 
         // Route::resource('/guru', GuruController::class);
+        // Route::get('/events/filter', 'PembayaranpendaftaranController@filterEvents')->name('events.filter');
+        Route::get('/pembayaranpendaftaran/filter', [PembayaranpendaftaranController::class, 'filter'])->name('pembayaranpendaftaran.filter');
+        // Route::get('/post_start_end_date', [PembayaranpendaftaranController::class, 'postStartEndDate']);
+        Route::get('/invoicedetails/{noPayment}', [PembayaranpendaftaranController::class, 'invoicedetails'])->middleware('verify_user:manager,admin,director');
+        Route::get('/print', [PembayaranpendaftaranController::class, 'print'])->middleware('verify_user:manager,admin,director');
+        // Route::get('/filter_data', [PembayaranpendaftaranController::class, 'filterData']);
         Route::resource('/pembayaranpendaftaran', PembayaranpendaftaranController::class)->middleware('verify_user:manager,admin,director');
+        // Rute untuk mengambil opsi-opsi nisBlc
+        Route::get('/get_nis_blc_options', [PembayaranController::class, 'getNisBlcOptions']);
+
+        // Rute untuk mengambil data siswa berdasarkan nisBlc
+        Route::get('/get_student_by_nis_blc/{nisBlc}', [PembayaranController::class, 'getStudentByNisBlc']);
+        Route::get('/invoicedetailspembayaran/{noPayment}', [PembayaranController::class, 'invoicedetailspembayaran'])->middleware('verify_user:manager,admin,director');
+        Route::get('/printpembayaran', [PembayaranController::class, 'printpembayaran'])->middleware('verify_user:manager,admin,director');
         Route::resource('/pembayaran', PembayaranController::class)->middleware('verify_user:manager,admin,director');
     });
 });

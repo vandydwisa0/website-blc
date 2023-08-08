@@ -5,7 +5,7 @@
             <h1 class="mb-2 text-gray-700 font-bold text-4xl">Data Kelas</h1>
 
             <section class="bg-gray-50 ">
-                <div class="flex-auto mx-auto">
+                <div class="flex-auto mx-auto max-w-full">
                     <!-- Start coding here -->
                     <div class="bg-white  relative shadow-md sm:rounded-lg overflow-hidden">
                         <div
@@ -23,10 +23,12 @@
                                             </svg>
                                         </div>
                                         <div class="flex flex-row">
-                                            <input type="text" id="cari" name="cari" {{-- value="{{ request('cari') }}" --}}
+                                            <input type="text" id="myInput" onkeyup="myFunction()" name="cari"
+                                                {{-- value="{{ request('cari') }}" --}}
                                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2    -500 -500"
                                                 placeholder="Search" name="search">
-                                            {{-- <button type="submit" class=" ml-4 block w-full md:w-auto font-medium rounded-lg text-sm px-5 py-2.5 text-center text-white bg-dwisa-400 hover:bg-dwisa-300 focus:ring-dwisa-300  -200 -300">Cari</button> --}}
+                                            {{-- <button type="submit"
+                                                class=" ml-4 block w-full md:w-auto font-medium rounded-lg text-sm px-5 py-2.5 text-center text-white ">Cari</button> --}}
                                         </div>
                                     </div>
                                 </form>
@@ -39,7 +41,7 @@
                             </div>
                         </div>
                         <div class="relative px-4 py-4 overflow-x-auto">
-                            <table class="min-w-full text-sm text-left text-gray-500 ">
+                            <table id="myTable" class="min-w-full text-sm text-left text-gray-500 ">
                                 <thead class="text-xs text-gray-700 uppercase bg-gray-50  ">
                                     <tr>
                                         <th scope="col" class="px-4 py-3">No</th>
@@ -75,8 +77,46 @@
                     </div>
                 </div>
             </section>
-
-
         </div>
     </div>
+    <script>
+        // JavaScript Code
+        function myFunction() {
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("myInput");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("myTable");
+            tr = table.getElementsByTagName("tr");
+
+            for (i = 0; i < tr.length; i++) {
+                // Ganti indeks [0], [1], [2], [3], dan [4] untuk memfilter kolom Class Name, School Level, Program, Meeting per Week, dan Company Branch
+                tdClassName = tr[i].getElementsByTagName("td")[0];
+                tdSchoolLevel = tr[i].getElementsByTagName("td")[1];
+                tdProgram = tr[i].getElementsByTagName("td")[2];
+                tdMeetingPerWeek = tr[i].getElementsByTagName("td")[3];
+                tdCompanyBranch = tr[i].getElementsByTagName("td")[4];
+
+                if (tdClassName || tdSchoolLevel || tdProgram || tdMeetingPerWeek || tdCompanyBranch) {
+                    txtValueClassName = tdClassName.textContent || tdClassName.innerText;
+                    txtValueSchoolLevel = tdSchoolLevel.textContent || tdSchoolLevel.innerText;
+                    txtValueProgram = tdProgram.textContent || tdProgram.innerText;
+                    txtValueMeetingPerWeek = tdMeetingPerWeek.textContent || tdMeetingPerWeek.innerText;
+                    txtValueCompanyBranch = tdCompanyBranch.textContent || tdCompanyBranch.innerText;
+
+                    // Gunakan operator "atau" (||) untuk mencocokkan dengan salah satu kriteria
+                    if (
+                        txtValueClassName.toUpperCase().indexOf(filter) > -1 ||
+                        txtValueSchoolLevel.toUpperCase().indexOf(filter) > -1 ||
+                        txtValueProgram.toUpperCase().indexOf(filter) > -1 ||
+                        txtValueMeetingPerWeek.toUpperCase().indexOf(filter) > -1 ||
+                        txtValueCompanyBranch.toUpperCase().indexOf(filter) > -1
+                    ) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+    </script>
 @endsection

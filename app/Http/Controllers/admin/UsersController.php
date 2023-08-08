@@ -182,4 +182,13 @@ class UsersController extends Controller
     public function destroy($id)
     {
     }
+
+    // public function updateEmailVerification($id)
+    // {
+    //     $staff = app('firebase.firestore')->database()->collection('users');
+    //     $query = $staff->where('role', '!=', 'siswa');
+    //     $usersid = $query->document($id);
+    //     $usersid->update(['emailVerified' => true]);
+    //     return response()->json(['emailVerified' => true]);
+    // }
 }

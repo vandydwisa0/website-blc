@@ -41,7 +41,7 @@ class ProgramController extends Controller
             // Uplode Data
             $request->validate([
                 'name' => 'required',
-                'paymentType' => 'required',
+                // 'paymentType' => 'required',
                 'price' => 'required',
                 'meetingsPerWeek' => 'required',
             ]);
@@ -51,7 +51,7 @@ class ProgramController extends Controller
             $stuRef = app('firebase.firestore')->database()->collection('program')->newDocument();
             $stuRef->set([
                 'name' => $request->name,
-                'paymentType' => $request->paymentType,
+                // 'paymentType' => $request->paymentType,
                 'price' => $request->price,
                 'meetingsPerWeek' => $request->meetingsPerWeek,
             ]);
@@ -101,7 +101,7 @@ class ProgramController extends Controller
             // Data ditemukan, update data di Firestore berdasarkan data yang dikirim melalui form
             $docRef->update([
                 ['path' => 'name', 'value' => $request->name],
-                ['path' => 'paymentType', 'value' => $request->paymentType],
+                // ['path' => 'paymentType', 'value' => $request->paymentType],
                 ['path' => 'price', 'value' => $request->price],
                 ['path' => 'meetingsPerWeek', 'value' => $request->meetingsPerWeek],
             ]);

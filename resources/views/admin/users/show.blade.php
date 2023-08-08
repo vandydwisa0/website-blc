@@ -41,77 +41,84 @@
                 <form id="show">
                     <div class="flex items-center pt-2  rounded-t ">
                         <div class="flex flex-row">
-                            <p class="flex text-gray-900 mr-2.5">NIK</p>
+                            <p class="flex text-gray-900 mr-2.5">Nama</p>
                             <p class="flex ml-44 text-gray-500 ">:</p>
                         </div>
-                        <p class="space-x-10 ml-2">#</p>
+                        <p class="space-x-10 ml-2">{{ $item->data()['name'] }}</p>
                     </div>
 
                     <div class="flex items-center pt-2 rounded-t ">
                         <div class="flex flex-row">
-                            <p class="flex text-gray-900 mr-1.5">NIP</p>
+                            <p class="flex text-gray-900 mr-2">Initials</p>
                             <p class="flex ml-44 text-gray-500">:</p>
                         </div>
-                        <p class="space-x-10 ml-2">#</p>
+                        <p class="space-x-10 ml-2">{{ $item->data()['initials'] }}</p>
                     </div>
                     <div class="flex items-center pt-2 rounded-t ">
                         <div class="flex flex-row">
-                            <p class="flex text-gray-900 mr-1.5">Inisials</p>
+                            <p class="flex text-gray-900 mr-1">Alamat</p>
                             <p class="flex ml-44 text-gray-500">:</p>
                         </div>
-                        <p class="space-x-10 ml-2">#</p>
+                        <p class="space-x-10 ml-2">{{ $item->data()['address'] }}</p>
                     </div>
 
                     <div class="flex items-center pt-2 rounded-t ">
                         <div class="flex flex-row">
-                            <p class="flex text-gray-900 mr-3">Nama</p>
+                            <p class="flex text-gray-900 mr-3">No Telephone</p>
+                            <p class="flex ml-32 text-gray-500">:</p>
+                        </div>
+                        <p class="space-x-10 ml-2">{{ $item->data()['phoneNumber'] }}</p>
+                    </div>
+
+                    <div class="flex items-center pt-2 rounded-t ">
+                        <div class="flex flex-row">
+                            <p class="flex text-gray-900 mr-4">Email</p>
+                            <p class="flex ml-44 text-gray-500">:</p>
+                        </div>
+                        <p class="space-x-10 ml-2">{{ $item->data()['email'] }}</p>
+                    </div>
+
+                    <div class="flex items-center pt-2 rounded-t ">
+                        <div class="flex flex-row">
+                            <p class="flex text-gray-900 mr-2">NIK</p>
+                            <p class="flex ml-48 text-gray-500">:</p>
+                        </div>
+                        <p class="space-x-10 ml-2">{{ $item->data()['nik'] }}</p>
+                    </div>
+                    <div class="flex items-center pt-2 rounded-t ">
+                        <div class="flex flex-row">
+                            <p class="flex text-gray-900 mr-2">NIP</p>
+                            <p class="flex ml-48 text-gray-500">:</p>
+                        </div>
+                        <p class="space-x-10 ml-2">{{ $item->data()['nip'] }}</p>
+                    </div>
+                    <div class="flex items-center pt-2 rounded-t ">
+                        <div class="flex flex-row">
+                            <p class="flex text-gray-900 mr-2.5">Tempat, Tanggal Lahir</p>
+                            <p class="flex ml-20 text-gray-500">:</p>
+                        </div>
+                        <p class="space-x-10 ml-2">{{ $item->data()['placeAndDateOfBirth'] }}</p>
+                    </div>
+                    <div class="flex items-center pt-2 rounded-t ">
+                        <div class="flex flex-row">
+                            <p class="flex text-gray-900 mr-3">Jenis Kelamin</p>
+                            <p class="flex ml-32 text-gray-500">:</p>
+                        </div>
+                        <p class="space-x-10 ml-2">{{ $item->data()['gender'] }}</p>
+                    </div>
+                    <div class="flex items-center pt-2 rounded-t ">
+                        <div class="flex flex-row">
+                            <p class="flex text-gray-900 mr-0.5">Agama</p>
+                            <p class="flex ml-44 text-gray-500">:</p>
+                        </div>
+                        <p class="space-x-10 ml-2">{{ $item->data()['religion'] }}</p>
+                    </div>
+                    <div class="flex items-center pt-2 rounded-t ">
+                        <div class="flex flex-row">
+                            <p class="flex text-gray-900 mr-3.5">Jabatan</p>
                             <p class="flex ml-40 text-gray-500">:</p>
                         </div>
-                        <p class="space-x-10 ml-2">#</p>
-                    </div>
-
-                    <div class="flex items-center pt-2 rounded-t ">
-                        <div class="flex flex-row">
-                            <p class="flex text-gray-900 mr-4">Jabatan</p>
-                            <p class="flex ml-40 text-gray-500">:</p>
-                        </div>
-                        <p class="space-x-10 ml-2">#</p>
-                    </div>
-
-                    <div class="flex items-center pt-2 rounded-t ">
-                        <div class="flex flex-row">
-                            <p class="flex text-gray-900 mr-3.5">No Telephone</p>
-                            <p class="flex ml-32 text-gray-500">:</p>
-                        </div>
-                        <p class="space-x-10 ml-2">#</p>
-                    </div>
-                    <div class="flex items-center pt-2 rounded-t ">
-                        <div class="flex flex-row">
-                            <p class="flex text-gray-900 mr-3.5">Alamat</p>
-                            <p class="flex ml-32 text-gray-500">:</p>
-                        </div>
-                        <p class="space-x-10 ml-2">#</p>
-                    </div>
-                    <div class="flex items-center pt-2 rounded-t ">
-                        <div class="flex flex-row">
-                            <p class="flex text-gray-900 mr-3.5">Tempat, Tanggal Lahir</p>
-                            <p class="flex ml-32 text-gray-500">:</p>
-                        </div>
-                        <p class="space-x-10 ml-2">#</p>
-                    </div>
-                    <div class="flex items-center pt-2 rounded-t ">
-                        <div class="flex flex-row">
-                            <p class="flex text-gray-900 mr-3.5">Jenis Kelamin</p>
-                            <p class="flex ml-32 text-gray-500">:</p>
-                        </div>
-                        <p class="space-x-10 ml-2">#</p>
-                    </div>
-                    <div class="flex items-center pt-2 rounded-t ">
-                        <div class="flex flex-row">
-                            <p class="flex text-gray-900 mr-3.5">Agama</p>
-                            <p class="flex ml-32 text-gray-500">:</p>
-                        </div>
-                        <p class="space-x-10 ml-2">#</p>
+                        <p class="space-x-10 ml-2">{{ $item->data()['role'] }}</p>
                     </div>
                 </form>
             </div>

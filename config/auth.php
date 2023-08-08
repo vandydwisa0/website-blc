@@ -46,6 +46,11 @@ return [
             'provider' => 'users',
             'hash' => false,
         ],
+        // 'firebase' => [
+        //     'driver' => 'firebase', // Use the 'firebase' driver for this guard
+        //     'provider' => 'firebaseUser', // Use the appropriate provider
+        // ],
+
     ],
 
     /*
@@ -70,6 +75,11 @@ return [
             'driver' => 'firebaseuserprovider',
             'model' => \App\Models\User::class
         ],
+        // 'firebase' => [
+        //     'driver' => 'firebase', // Use the 'firebase' driver for this guard
+        //     'provider' => 'firebaseUser', // Use the appropriate provider
+        // ],
+
         // 'users' => [
         //     'driver' => 'eloquent',
         //     'model' => App\Models\User::class,
